@@ -120,17 +120,6 @@ public class GoogleMapActivity extends Fragment {
     }
 
 
-    // --------------------
-    // SETTINGS MENU
-    // --------------------
-
-
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_display_location, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
 
 
 }

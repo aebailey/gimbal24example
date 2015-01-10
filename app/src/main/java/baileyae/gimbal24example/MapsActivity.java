@@ -1,5 +1,6 @@
 package baileyae.gimbal24example;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +44,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 
-public class MapsActivity extends FragmentActivity
+public class MapsActivity extends ActionBarActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     /*
@@ -412,6 +414,19 @@ public class MapsActivity extends FragmentActivity
         if (gcmSenderId != null) {
             Gimbal.registerForPush(gcmSenderId);
         }
+    }
+    // --------------------
+    // SETTINGS MENU
+    // --------------------
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_display_location, menu);
+        super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override

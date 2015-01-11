@@ -1,6 +1,10 @@
 package baileyae.gimbal24example;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -11,12 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 
@@ -26,6 +32,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
     private static final String TAG = "Google Maps Activity";
     private static View view;
     public GoogleMap mMap;
+
 
     private static Double latitude, longitude;
     MapFragment mapFragment;
@@ -42,9 +49,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.googlemapfragmentlayout, container, false);
-        // Passing harcoded values for latitude & longitude. Please change as per your need. This is just used to drop a Marker on the Map
-        //latitude = 26.78;
-        //longitude = 72.56;
+
 
         setUpMapIfNeeded(); // For setting up the MapFragment
 
@@ -86,6 +91,43 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
     }
 
 
+    //protected void startLocationUpdates() {
+    //    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest,  this);
+    //}
+
+    @Override
+    public void onMapReady(GoogleMap mymMap) {
+        mMap = mymMap;
+        mMap.setMyLocationEnabled(true);
+        MyApp appState = ((MyApp)getActivity().getApplicationContext());
+        Location mLastLocation = appState.getmLastLocation();
+        LatLng mylatlng;
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        if (mLastLocation == null) {
+            double latitude = Double.longBitsToDouble(sharedPref.getLong("Latitude", 0));
+            double longitude = Double.longBitsToDouble(sharedPref.getLong("Longitude", 0));
+            mylatlng = new LatLng(latitude,longitude);
+        }else{
+            mylatlng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        }
+        float zoom = sharedPref.getFloat("zoom",13);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylatlng, zoom));
+    }
+
+    public void onDestroy(){
+        CameraPosition mMyCam = mMap.getCameraPosition();
+        double longitude = mMyCam.target.longitude;
+        double latitude = mMyCam.target.latitude;
+        float zoom = mMyCam.zoom;
+        SharedPreferences settings = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putLong("Latitude", Double.doubleToLongBits(latitude));
+        editor.putLong("Longitude", Double.doubleToLongBits(longitude));
+        editor.putFloat("zoom", zoom);
+        editor.commit();
+
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater)  {
 
@@ -110,11 +152,4 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
         }
     }
 
-    @Override
-    public void onMapReady(GoogleMap mymMap) {
-        mMap = mymMap;
-        mMap.setMyLocationEnabled(true);
-        //mylatlng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 13));
-    }
 }

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -36,17 +37,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import android.app.FragmentManager;
 
+import java.util.Observer;
+
 
 public class MapsActivity extends ActionBarActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    /*
- * Define a request code to send to Google Play services
- * This code is returned in Activity.onActivityResult
- */
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private GoogleApiClient mGoogleApiClient;
+
+    public GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LatLng mylatlng;
     private static final String TAG = "Maps Activity";
@@ -56,6 +54,13 @@ public class MapsActivity extends ActionBarActivity
     private GimbalEventListAdapter adapter;
     public static  FragmentManager fragmentManager;
 
+    // Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 1001;
+    // Unique tag for the error dialog fragment
+    private static final String DIALOG_ERROR = "dialog_error";
+    // Bool to track whether the app is already resolving an error
+    private boolean mResolvingError = false;
+    private static final String STATE_RESOLVING_ERROR = "resolving_error";
 
 
     @Override
@@ -169,68 +174,56 @@ public class MapsActivity extends ActionBarActivity
      * by Google Play services
      */
     @Override
-    protected void onActivityResult(
-            int requestCode, int resultCode, Intent data) {
-        // Decide what to do based on the original request code
-        switch (requestCode) {
-
-            case CONNECTION_FAILURE_RESOLUTION_REQUEST :
-            /*
-             * If the result code is Activity.RESULT_OK, try
-             * to connect again
-             */
-                switch (resultCode) {
-
-                    case Activity.RESULT_OK :
-                    /*
-                     * Try the request again
-                     */
-
-                        break;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RESOLVE_ERROR) {
+            mResolvingError = false;
+            if (resultCode == RESULT_OK) {
+                // Make sure the app is not already connected or attempting to connect
+                if (!mGoogleApiClient.isConnecting() &&
+                        !mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.connect();
                 }
-
-        }
-
-    }
-
-    private boolean servicesConnected() {
-        // Check that Google Play services is available
-        int resultCode =  GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("Geofence Detection",
-                    "Google Play services is available.");
-            // Continue
-            return true;
-            // Google Play services was not available for some reason
-        } else {
-
-            // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
-                    resultCode,
-                    this,
-                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment =
-                        new ErrorDialogFragment();
-                // Set the dialog in the DialogFragment
-                errorFragment.setDialog(errorDialog);
-                // Show the error dialog in the DialogFragment
-                errorFragment.show(getSupportFragmentManager(),"Geofence Detection");
             }
-            return false;
         }
-
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(ConnectionResult result) {
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (result.hasResolution()) {
+            try {
+                mResolvingError = true;
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                mGoogleApiClient.connect();
+            }
+        } else {
+            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
+            showErrorDialog(result.getErrorCode());
+            mResolvingError = true;
+        }
 
     }
+
+    private void showErrorDialog(int errorCode) {
+        // Create a fragment for the error dialog
+        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt(DIALOG_ERROR, errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getSupportFragmentManager(), "errordialog");
+    }
+
+    /* Called from ErrorDialogFragment when the dialog is dismissed. */
+    public void onDialogDismissed() {
+        mResolvingError = false;
+    }
+
+
     @Override
     public void onConnectionSuspended(int i) {
 
@@ -303,7 +296,8 @@ public class MapsActivity extends ActionBarActivity
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
     protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest,  this);
+        createLocationRequest();
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
 
@@ -313,6 +307,8 @@ public class MapsActivity extends ActionBarActivity
 
             mylatlng = new LatLng(location.getLatitude(),location.getLongitude());
             mLastLocation = location;
+            MyApp appState = ((MyApp)getApplicationContext());
+            appState.setState(mLastLocation);
             //mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
             updateUI();
         }
@@ -331,7 +327,7 @@ public class MapsActivity extends ActionBarActivity
         savedInstanceState.putBoolean("REQUESTING_LOCATION_UPDATES_KEY",
                 mRequestingLocationUpdates);
         savedInstanceState.putParcelable("LOCATION_KEY", mLastLocation);
-
+        savedInstanceState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -380,8 +376,6 @@ public class MapsActivity extends ActionBarActivity
     // --------------------
     // SETTINGS MENU
     // --------------------
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

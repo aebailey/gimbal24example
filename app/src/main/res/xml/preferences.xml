@@ -25,4 +25,8 @@
     <Preference
         android:key="pref_reset_app_instance_id"
         android:title="@string/action_reset_app_instance_id" />
+    <CheckBoxPreference
+        android:key="log_gimbal"
+        android:title="@string/log_gimbal"
+        android:defaultValue="false" />
 </PreferenceScreen>

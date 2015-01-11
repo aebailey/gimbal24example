@@ -11,9 +11,6 @@
     <string name="get_location">Get Location</string>
     <string name="address_label">Address:</string>
     <string name="latlng_label">LatLon</string>
-
-
-
     <string name="app_title">Gimbal Sample App</string>
     <string name="action_enable">Enable</string>
     <string name="action_not_now">Not Now</string>
@@ -24,6 +21,7 @@
     <string name="action_reset_app_instance_id">Reset App Instance ID</string>
     <string name="optin_top_text">Enable location to find</string>
     <string name="optin_bottom_text">nearby places.</string>
-
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_gimbal">Gimbal Logging</string>
 
 </resources>

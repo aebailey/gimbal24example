@@ -1,6 +1,5 @@
 package baileyae.gimbal24example;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,18 +17,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.gimbal.android.Gimbal;
-import com.gimbal.android.PlaceEventListener;
-import com.gimbal.android.PlaceManager;
 import com.gimbal.logging.GimbalLogConfig;
 import com.gimbal.logging.GimbalLogLevel;
 import com.google.android.gms.common.ConnectionResult;
@@ -40,8 +33,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import android.app.FragmentManager;
 
 
 public class MapsActivity extends ActionBarActivity
@@ -61,31 +54,28 @@ public class MapsActivity extends ActionBarActivity
     private Boolean mRequestingLocationUpdates;
     private GimbalEventReceiver gimbalEventReceiver;
     private GimbalEventListAdapter adapter;
-    public static android.support.v4.app.FragmentManager fragmentManager;
+    public static  FragmentManager fragmentManager;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "On Create Started");
+        //Log.i(TAG, "On Create Started");
+        fragmentManager = getFragmentManager();
         setContentView(R.layout.activity_maps);
-        fragmentManager = getSupportFragmentManager();
-        GimbalLogConfig.setLogLevel(GimbalLogLevel.DEBUG);
-        GimbalLogConfig.enableFileLogging(this);
+
         mRequestingLocationUpdates = Boolean.TRUE;
         updateValuesFromBundle(savedInstanceState);
         Intent intent = new Intent(this, GimbalAppService.class);
-        Log.i(TAG, "Intent Created");
+        //Log.i(TAG, "Intent Created");
         startService(intent);
-        Log.i(TAG, "Service Started");
+        //Log.i(TAG, "Service Started");
 
         adapter = new GimbalEventListAdapter(this);
 
         ListView listView = (ListView) findViewById(R.id.listview);
         listView.setAdapter(adapter);
-
-        GoogleMapActivity.setUpMapIfNeeded();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -249,34 +239,6 @@ public class MapsActivity extends ActionBarActivity
 
 
 
-
-
-    /**
-     * Adding code for each button
-     */
-    public void sendNormal(View view) {
-        // Do something in response to button
-        mMap.setMapType((GoogleMap.MAP_TYPE_NORMAL));
-    }
-
-    public void sendSatellite(View view) {
-        // Do something in response to button
-        mMap.setMapType((GoogleMap.MAP_TYPE_SATELLITE));
-    }
-
-    public void getLocation(View view) {
-        // Do something in response to button
-        startLocationUpdates();
-        if(mLastLocation != null){
-        Intent intent = new Intent(this, DisplayLocationActivity.class);
-
-        intent.putExtra("LOCATION_DATA", mLastLocation);
-        startActivity(intent);}else{
-            Toast toast = Toast.makeText(this,"Location not found" ,Toast.LENGTH_SHORT);
-            Log.w(TAG, "Location not found");
-        }
-    }
-
     //Once connected to Play APi, get location
     @Override
     public void onConnected(Bundle connectionHint) {
@@ -357,7 +319,7 @@ public class MapsActivity extends ActionBarActivity
     private void updateUI() {
         mylatlng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
         Log.i(TAG, "Update Ui Location: "+mylatlng.toString());
-        GoogleMapActivity.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylatlng, 13));
+        //GoogleMapFragment.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mylatlng, 13));
     }
 
     protected void stopLocationUpdates() {
@@ -431,11 +393,27 @@ public class MapsActivity extends ActionBarActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
+        //int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.get_location:
+                startLocationUpdates();
+                if(mLastLocation != null){
+                    Intent intent = new Intent(this, DisplayLocationActivity.class);
+
+                    intent.putExtra("LOCATION_DATA", mLastLocation);
+                    startActivity(intent);
+                }else {
+                    Toast toast = Toast.makeText(this, "Location not found", Toast.LENGTH_SHORT);
+                    Log.w(TAG, "Location not found");
+                    toast.show();
+                }
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
-        return super.onOptionsItemSelected(item);
     }
 }

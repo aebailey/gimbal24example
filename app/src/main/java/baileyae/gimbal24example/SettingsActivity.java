@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import com.gimbal.android.Gimbal;
 import com.gimbal.android.PlaceManager;
+import com.gimbal.logging.GimbalLogConfig;
+import com.gimbal.logging.GimbalLogLevel;
 
 // NOTE: Using deprecated apis to support api levels down to 8 and keep
 // code relatively straight forward
@@ -36,8 +38,8 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        Preference placeMonitoringPreferend = findPreference(GimbalDAO.PLACE_MONITORING_PREFERENCE);
-        placeMonitoringPreferend.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+        Preference placeMonitoringPreference = findPreference(GimbalDAO.PLACE_MONITORING_PREFERENCE);
+        placeMonitoringPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 if (newValue == Boolean.TRUE) {
@@ -56,6 +58,21 @@ public class SettingsActivity extends PreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 Gimbal.resetApplicationInstanceIdentifier();
                 Toast.makeText(SettingsActivity.this, "App Instance ID reset", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+        Preference gimbalLogPreference = findPreference("log_gimbal");
+        gimbalLogPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue == Boolean.TRUE) {
+                    GimbalLogConfig.setLogLevel(GimbalLogLevel.DEBUG);
+                    GimbalLogConfig.enableFileLogging(getApplicationContext());
+                }
+                else {
+                    GimbalLogConfig.setLogLevel(GimbalLogLevel.ERROR);
+                    GimbalLogConfig.disableFileLogging();
+                }
                 return true;
             }
         });

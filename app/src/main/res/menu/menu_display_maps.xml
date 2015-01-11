@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="baileyae.gimbal24example.DisplayLocationActivity">
+
+    <item
+        android:id="@+id/map_normal"
+        android:orderInCategory="2"
+        android:icon="@drawable/map_normal"
+        android:title="@string/button_mapnormal"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/map_satellite"
+        android:orderInCategory="3"
+        android:icon="@drawable/satellite"
+        android:title="@string/button_mapsatellite"
+        app:showAsAction="ifRoom"/>
+
+</menu>

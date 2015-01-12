@@ -16,15 +16,10 @@
  */
 package baileyae.gimbal24example;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.gimbal.android.Communication;
 import com.gimbal.android.CommunicationListener;
@@ -33,10 +28,16 @@ import com.gimbal.android.Gimbal;
 import com.gimbal.android.Place;
 import com.gimbal.android.PlaceEventListener;
 import com.gimbal.android.PlaceManager;
-import com.gimbal.logging.*;
+import com.gimbal.logging.GimbalLogConfig;
+import com.gimbal.logging.GimbalLogLevel;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedList;
+
 import baileyae.gimbal24example.GimbalEvent.TYPE;
-import com.gimbal.proximity.*;
-import baileyae.gimbal24example.GimbalEventListAdapter;
+
+import static com.gimbal.android.Gimbal.registerForPush;
 
 
 public class GimbalAppService extends Service {
@@ -61,6 +62,7 @@ public class GimbalAppService extends Service {
             public void onEntry(Place place, long timestamp) {
                 addEvent(new GimbalEvent(TYPE.PLACE_ENTER, place.getName(), new Date(timestamp)));
                 Log.i(TAG,"Place Entered");
+                place.getAttributes();
             }
 
             @Override
@@ -78,8 +80,8 @@ public class GimbalAppService extends Service {
 
 
         // Setup Push Communication
-        //String gcmSenderId = null; // <--- SET THIS STRING TO YOUR PUSH SENDER ID HERE (Google API project #) ##
-        //registerForPush(gcmSenderId);
+        String gcmSenderId = "649583496832"; // <--- SET THIS STRING TO YOUR PUSH SENDER ID HERE (Google API project #) ##
+        registerForPush(gcmSenderId);
 
         // Setup CommunicationListener
         communicationListener = new CommunicationListener() {

@@ -116,6 +116,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
     }
 
     public void onDestroy(){
+        super.onDestroy();
         CameraPosition mMyCam = mMap.getCameraPosition();
         double longitude = mMyCam.target.longitude;
         double latitude = mMyCam.target.latitude;

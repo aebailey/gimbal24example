@@ -16,9 +16,14 @@
  */
 package baileyae.gimbal24example;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.gimbal.android.Communication;
@@ -63,12 +68,14 @@ public class GimbalAppService extends Service {
                 addEvent(new GimbalEvent(TYPE.PLACE_ENTER, place.getName(), new Date(timestamp)));
                 Log.i(TAG,"Place Entered");
                 place.getAttributes();
+                notify_place(place, TYPE.PLACE_ENTER);
             }
 
             @Override
             public void onExit(Place place, long entryTimestamp, long exitTimestamp) {
                 addEvent(new GimbalEvent(TYPE.PLACE_EXIT, place.getName(), new Date(exitTimestamp)));
                 Log.i(TAG,"Place Exited");
+                notify_place(place, TYPE.PLACE_EXIT);
             }
         };
 
@@ -137,6 +144,51 @@ public class GimbalAppService extends Service {
         return null;
     }
 
+    public void notify_place (Place place, TYPE type){
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(iconRes(type))
+                        .setContentTitle(place.getName())
+                        .setContentText("You have triggered a place event");
+// Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MapsActivity.class);
 
+// The stack builder object will contain an artificial back stack for the
+// started Activity.
+// This ensures that navigating backward from the Activity leads out of
+// your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+// Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MapsActivity.class);
+// Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+        mNotificationManager.notify(0, mBuilder.build());
+    }
+
+    private int iconRes(GimbalEvent.TYPE type) {
+        switch (type) {
+            case PLACE_ENTER:
+                return R.drawable.place_enter;
+            case PLACE_EXIT:
+                return R.drawable.place_exit;
+            case COMMUNICATION_ENTER:
+                return R.drawable.comm_enter;
+            case COMMUNICATION_EXIT:
+                return R.drawable.comm_exit;
+            case COMMUNICATION_PUSH:
+                return R.drawable.comm_enter;
+            default:
+                return R.drawable.place_enter;
+        }
+    }
 
 }

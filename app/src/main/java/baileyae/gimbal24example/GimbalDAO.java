@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -95,6 +96,7 @@ public class GimbalDAO {
                 jsonObject.put("title", event.getTitle());
                 jsonObject.put("date", event.getDate().getTime());
                 jsonArray.put(jsonObject);
+
             }
             String jstr = jsonArray.toString();
             Editor editor = prefs.edit();
@@ -112,5 +114,7 @@ public class GimbalDAO {
             Log.e(TAG, "Catch JSON exception",e);
         }
     }
+
+
 
 }

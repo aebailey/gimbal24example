@@ -85,7 +85,11 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
         // Do a null check to confirm that we have not already instantiated the map.
         MapFragment mapFragment = new MapFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.map_holder, mapFragment,"gmap").commit();
+        if(getChildFragmentManager().findFragmentByTag("gmap")==null){
+            transaction.add(R.id.map_holder, mapFragment,"gmap").commit();
+        }else{
+            transaction.replace(R.id.map_holder, mapFragment,"gmap").commit();
+        }
         mapFragment.getMapAsync(this);
 
     }

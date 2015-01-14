@@ -54,8 +54,7 @@ public class GimbalAppService extends Service {
 
     @Override
     public void onCreate() {
-        GimbalLogConfig.setLogLevel(GimbalLogLevel.DEBUG);
-        GimbalLogConfig.enableFileLogging(this);
+
         events = new LinkedList<GimbalEvent>(GimbalDAO.getEvents(getApplicationContext()));
         Log.i(TAG,"App Service Created");
         Gimbal.setApiKey(this.getApplication(), "a5ba1b92-0be5-4ae9-bece-21b8b832546a");
@@ -68,6 +67,7 @@ public class GimbalAppService extends Service {
                 addEvent(new GimbalEvent(TYPE.PLACE_ENTER, place.getName(), new Date(timestamp)));
                 Log.i(TAG,"Place Entered");
                 place.getAttributes();
+
                 notify_place(place, TYPE.PLACE_ENTER);
             }
 
@@ -80,11 +80,6 @@ public class GimbalAppService extends Service {
         };
 
         PlaceManager.getInstance().addPlaceEventListener(placeEventListener);
-        //placeManager.startMonitoring();
-
-        //Log.i(TAG, String.valueOf(PlaceManager.isMonitoring()));
-
-
 
         // Setup Push Communication
         String gcmSenderId = "649583496832"; // <--- SET THIS STRING TO YOUR PUSH SENDER ID HERE (Google API project #) ##

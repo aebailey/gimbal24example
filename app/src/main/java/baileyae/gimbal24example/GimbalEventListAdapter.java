@@ -22,12 +22,14 @@ import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.transition.TransitionManager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 public class GimbalEventListAdapter extends BaseAdapter {
@@ -73,7 +75,7 @@ public class GimbalEventListAdapter extends BaseAdapter {
             view = activity.getLayoutInflater().inflate(R.layout.list_item, null);
         }
 
-        // TODO: Use wrapper
+
         ImageView icon = (ImageView) view.findViewById(R.id.icon);
         Integer iconRes = iconRes(event.getType());
         if (iconRes != null) {
@@ -88,6 +90,16 @@ public class GimbalEventListAdapter extends BaseAdapter {
 
         TextView subtitle = (TextView) view.findViewById(R.id.date);
         subtitle.setText(dateFormat.format(event.getDate()));
+
+
+        //parent.setOnClickListener(new View.OnClickListener() {
+         //   @Override
+        //    public void onClick(View v) {
+        //        Toast.makeText(activity, "Hello", Toast.LENGTH_SHORT).show();
+
+       //     }
+       // });
+
 
         return view;
     }

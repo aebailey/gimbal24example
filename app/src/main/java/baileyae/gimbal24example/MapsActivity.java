@@ -14,10 +14,17 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
+import android.transition.Scene;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,14 +58,25 @@ public class MapsActivity extends ActionBarActivity
     // Bool to track whether the app is already resolving an error
     private boolean mResolvingError = false;
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
-
-
+    private ViewGroup container;
+    private Transition transitionMgr;
+    private Scene scene1;
+    private Scene scene2;
+    private ListView listView;
+    private Context main_context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        main_context = this;
         //Log.i(TAG, "On Create Started");
-        fragmentManager = getFragmentManager();
+
         setContentView(R.layout.activity_maps);
+
+        container =(ViewGroup) findViewById(R.id.main_container);
+
+
+
+
 
         mRequestingLocationUpdates = Boolean.TRUE;
         updateValuesFromBundle(savedInstanceState);
@@ -66,11 +84,13 @@ public class MapsActivity extends ActionBarActivity
         //Log.i(TAG, "Intent Created");
         startService(intent);
         //Log.i(TAG, "Service Started");
-
+        fragmentManager = getFragmentManager();
         adapter = new GimbalEventListAdapter(this);
+        listView = (ListView) findViewById(R.id.listview);
+        createListView(listView);
 
-        ListView listView = (ListView) findViewById(R.id.listview);
-        listView.setAdapter(adapter);
+
+
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -79,6 +99,29 @@ public class MapsActivity extends ActionBarActivity
                 .build();
 
     }
+
+    public void goToNextScene(View view){
+        Scene tmp = scene2;
+        scene2 = scene1;
+        scene1 = tmp;
+        TransitionManager.go(scene1);
+    }
+
+    public void createListView(final ListView clistView){
+
+        clistView.setAdapter(adapter);
+        clistView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+                Intent intent = new Intent(main_context,event_details.class);
+
+                intent.putExtra("item_clicked", position);
+                startActivity(intent);
+            }
+        });
+    }
+
+
 
     @Override
     protected void onStart() {

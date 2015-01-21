@@ -9,11 +9,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.transition.Scene;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
@@ -24,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -64,16 +68,27 @@ public class MapsActivity extends ActionBarActivity
     private Scene scene2;
     private ListView listView;
     private Context main_context;
+
+    //Added for drawer layout
+    private String[] mNavigationDrawerItemTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private DrawerItemCustomAdapter d_adapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         main_context = this;
-        //Log.i(TAG, "On Create Started");
 
         setContentView(R.layout.activity_maps);
-
         container =(ViewGroup) findViewById(R.id.main_container);
-
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        createDrawer(mDrawerList);
+        mTitle = mDrawerTitle = getTitle();
 
 
 
@@ -121,6 +136,58 @@ public class MapsActivity extends ActionBarActivity
         });
     }
 
+    public void createDrawer(final ListView dlistView){
+        //Adding for navigation drawer
+        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
+
+        drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_action_map, mNavigationDrawerItemTitles[0]);
+        drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_action_place, mNavigationDrawerItemTitles[1]);
+        drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_action_view_as_list,mNavigationDrawerItemTitles[2]);
+        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_action_settings,mNavigationDrawerItemTitles[3]);
+        DrawerItemCustomAdapter d_adapter = new DrawerItemCustomAdapter(this, R.layout.drawer_item_row, drawerItem);
+
+        mDrawerList.setAdapter(d_adapter);
+        dlistView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+                mDrawerList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                mDrawerList.setItemChecked(position, true);
+                mDrawerList.setSelection(position);
+                getSupportActionBar().setTitle(mNavigationDrawerItemTitles[position]);
+                mDrawerLayout.closeDrawer(mDrawerList);
+            }
+        });
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                //R.drawable.ic_drawer,
+                R.string.drawer_open,
+                R.string.drawer_close
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(mTitle);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle(mDrawerTitle);
+            }
+        };
+        mDrawerToggle.syncState();
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
 
 
     @Override
@@ -172,7 +239,25 @@ public class MapsActivity extends ActionBarActivity
         adapter.setEvents(GimbalDAO.getEvents(getApplicationContext()));
     }
 
+    protected void onPostCreate(Bundle savedInstanceState) {
+        // TODO Display the navigation drawer icon on action bar when there state has changed
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
 
+    /* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
 
     /** Adding for Google Play Services Check
@@ -421,6 +506,9 @@ public class MapsActivity extends ActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //int id = item.getItemId();
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         switch (item.getItemId()) {
             case R.id.get_location:
                 startLocationUpdates();

@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Gimbal 2.4 App.iml" filepath="$PROJECT_DIR$/Gimbal 2.4 App.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Gimbal 2.4 Example.iml" filepath="$PROJECT_DIR$/Gimbal 2.4 Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/gimbal24example.iml" filepath="$PROJECT_DIR$/gimbal24example.iml" />
     </modules>

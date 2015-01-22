@@ -26,6 +26,10 @@
     <string name="title_activity_event_details">Event Details</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="search_text">Product Name</string>
+    <string name="button_search">Search</string>
+    <string name="title_offer_list">Offers</string>
+    <string name="title_offer_detail">Offer Detail</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>My Map</item>
@@ -33,5 +37,7 @@
         <item>Product Offers</item>
         <item>Product Preferences</item>
     </string-array>
+
+    <string name="title_activity_base">BaseActivity</string>
 
 </resources>

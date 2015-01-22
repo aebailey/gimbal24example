@@ -32,4 +32,5 @@ dependencies {
     compile files('libs/spring-android-rest-template-1.0.1.RELEASE.jar')
     compile files('libs/gimbal-dev-logging.jar')
     compile files('libs/gimbal.jar')
+    compile files('libs/universal-image-loader-1.9.3.jar')
 }

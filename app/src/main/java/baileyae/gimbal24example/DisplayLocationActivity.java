@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,14 +24,20 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class DisplayLocationActivity extends FragmentActivity {
+public class DisplayLocationActivity extends BaseActivity {
     private TextView mAddress;
     public ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.display_location);
+        //setContentView(R.layout.display_location);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        //inflate your activity layout here!
+        View contentView = inflater.inflate(R.layout.display_location, null, false);
+        mDrawerLayout.addView(contentView, 0);
+
         mAddress = (TextView) findViewById(R.id.address);
         TextView mLatLong = (TextView) findViewById(R.id.latlong);
 

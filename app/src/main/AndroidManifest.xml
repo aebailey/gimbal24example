@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="baileyae.gimbal24example" >
 
+    <uses-sdk android:minSdkVersion="11" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,7 +26,6 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
-    <uses-sdk android:minSdkVersion="11" />
 
     <application
         android:name=".MyApp"
@@ -47,6 +48,7 @@
 
         <activity
             android:name=".MapsActivity"
+            android:icon="@drawable/ic_action_map"
             android:label="@string/title_activity_maps" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,6 +73,10 @@
             android:name=".SettingsActivity"
             android:icon="@drawable/ic_action_settings"
             android:label="@string/action_settings" />
+        <activity
+            android:name="tesco.MainActivity"
+            android:icon="@drawable/ic_action_view_as_list"
+            android:label="@string/button_search" />
 
         <service
             android:name=".GimbalAppService"
@@ -79,6 +85,22 @@
         <activity
             android:name=".event_details"
             android:label="@string/title_activity_event_details" >
+        </activity>
+        <activity
+            android:name="tesco.OfferListActivity"
+            android:label="@string/title_offer_list" >
+        </activity>
+        <activity
+            android:name="tesco.OfferDetailActivity"
+            android:label="@string/title_offer_detail"
+            android:parentActivityName="tesco.OfferListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tesco.OfferListActivity" />
+        </activity>
+        <activity
+            android:name=".BaseActivity"
+            android:label="@string/title_activity_base" >
         </activity>
     </application>
 

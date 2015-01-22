@@ -30,15 +30,15 @@ public class event_details extends ActionBarActivity {
     public void createListView(final ListView clistView){
 
         clistView.setAdapter(adapter);
-        clistView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-                Intent intent = new Intent(main_context,event_details.class);
-
-                intent.putExtra("item_clicked", position);
-                startActivity(intent);
-            }
-        });
+        //clistView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+        //    @Override
+        //    public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
+        //        Intent intent = new Intent(main_context,event_details.class);
+        //
+        //       intent.putExtra("item_clicked", position);
+        //        startActivity(intent);
+        //    }
+        //});
     }
 
 

@@ -4,7 +4,7 @@ import android.app.Application;
 import android.location.Location;
 
 
-public class MyApp extends Application {
+public class PandG extends Application {
 
     private Location mLastLocation;
 

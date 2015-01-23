@@ -56,6 +56,11 @@ public class DisplayLocationActivity extends BaseActivity {
         }
 
     }
+    protected void onResume() {
+        super.onResume();
+        mDrawerList.setItemChecked(1, true);
+        mDrawerList.setSelection(1);
+    }
 
 
     @Override

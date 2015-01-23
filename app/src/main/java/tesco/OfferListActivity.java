@@ -1,10 +1,14 @@
 package tesco;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ListView;
 
+import baileyae.gimbal24example.BaseActivity;
 import baileyae.gimbal24example.MapsActivity;
 import baileyae.gimbal24example.R;
 
@@ -25,7 +29,7 @@ import baileyae.gimbal24example.R;
  * {@link OfferListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class OfferListActivity extends Activity
+public class OfferListActivity extends BaseActivity
         implements OfferListFragment.Callbacks {
 
     /**
@@ -38,7 +42,12 @@ public class OfferListActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_offer_list);
+        //setContentView(R.layout.activity_offer_list);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        //inflate your activity layout here!
+        View contentView = inflater.inflate(R.layout.activity_offer_list, null, false);
+        mDrawerLayout.addView(contentView, 0);
 
         mysearch = getIntent().getStringExtra("SEARCH");
         ((OfferListFragment)getFragmentManager().findFragmentById(R.id.offer_list)).set_search(mysearch);
@@ -58,6 +67,11 @@ public class OfferListActivity extends Activity
         }
 
         // TODO: If exposing deep links into your app, handle intents here.
+    }
+    protected void onResume() {
+        super.onResume();
+        mDrawerList.setItemChecked(2, true);
+        mDrawerList.setSelection(2);
     }
 
     /**

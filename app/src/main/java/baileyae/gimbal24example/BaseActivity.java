@@ -14,14 +14,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import tesco.MainActivity;
+import camera.CameraActivity;
+import tesco.SettingsProd;
+import tesco.TescoActivity;
 
 
 public class BaseActivity extends ActionBarActivity {
     //Added for drawer layout
     private String[] mNavigationDrawerItemTitles;
     protected DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    protected ListView mDrawerList;
     private DrawerItemCustomAdapter d_adapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
@@ -44,12 +46,13 @@ public class BaseActivity extends ActionBarActivity {
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[4];
+        ObjectDrawerItem[] drawerItem = new ObjectDrawerItem[5];
 
         drawerItem[0] = new ObjectDrawerItem(R.drawable.ic_action_map, mNavigationDrawerItemTitles[0]);
         drawerItem[1] = new ObjectDrawerItem(R.drawable.ic_action_place, mNavigationDrawerItemTitles[1]);
         drawerItem[2] = new ObjectDrawerItem(R.drawable.ic_action_view_as_list,mNavigationDrawerItemTitles[2]);
-        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_action_settings,mNavigationDrawerItemTitles[3]);
+        drawerItem[3] = new ObjectDrawerItem(R.drawable.ic_action_camera,mNavigationDrawerItemTitles[3]);
+        drawerItem[4] = new ObjectDrawerItem(R.drawable.ic_action_settings,mNavigationDrawerItemTitles[4]);
         DrawerItemCustomAdapter d_adapter = new DrawerItemCustomAdapter(this, R.layout.drawer_item_row, drawerItem);
 
         mDrawerList.setAdapter(d_adapter);
@@ -109,13 +112,18 @@ public class BaseActivity extends ActionBarActivity {
                 startActivity(intent);
                 break;
             case 2:
-                intent = new Intent(this, MainActivity.class);
+                intent = new Intent(this, TescoActivity.class);
                 startActivity(intent);;
                 break;
             case 3:
                 //TODO: link to preference page
-                intent = new Intent(this,MainActivity.class);
+                intent = new Intent(this, CameraActivity.class);
                 startActivity(intent);;
+                break;
+            case 4:
+                //TODO: link to preference page
+                intent = new Intent(this, SettingsProd.class);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -154,7 +162,7 @@ public class BaseActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    private void hideKeyboard() {
+    public void hideKeyboard() {
         // Check if no view has focus:
         View view = this.getCurrentFocus();
         if (view != null) {

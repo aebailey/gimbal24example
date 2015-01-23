@@ -4,10 +4,8 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,13 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -103,7 +98,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback{
     public void onMapReady(GoogleMap mymMap) {
         mMap = mymMap;
         mMap.setMyLocationEnabled(true);
-        MyApp appState = ((MyApp)getActivity().getApplicationContext());
+        PandG appState = ((PandG)getActivity().getApplicationContext());
         Location mLastLocation = appState.getmLastLocation();
         LatLng mylatlng;
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);

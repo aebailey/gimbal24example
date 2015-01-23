@@ -30,14 +30,47 @@
     <string name="button_search">Search</string>
     <string name="title_offer_list">Offers</string>
     <string name="title_offer_detail">Offer Detail</string>
-
+    <!--
+     Added for navigation drawer
+     -->
     <string-array name="navigation_drawer_items_array">
         <item>My Map</item>
         <item>Location events</item>
         <item>Product Offers</item>
+        <item>Capture Invoice</item>
         <item>Product Preferences</item>
     </string-array>
+    <!--
+    Added for camera
+    -->
+        <string name="title_activity_base">BaseActivity</string>
+        <string name="intro_message">
+            <![CDATA[
 
-    <string name="title_activity_base">BaseActivity</string>
 
-</resources>
+                This sample demonstrates the basic use of Camera2 API. Check the source code to see how
+                you can display camera preview and take pictures.
+
+
+            ]]>
+        </string>
+     <string name="picture">Picture</string>
+     <string name="description_info">Info</string>
+     <string name="title_activity_camera">Capture Invoice</string>
+    <!--
+    Added for prod prefs
+    -->
+    <string-array name="pList">
+        <item>Always</item>
+        <item>ambi pur</item>
+        <item>Ariel</item>
+        <item>Pampers</item>
+        <item>Olay</item>
+    </string-array><string-array name="pValues">
+    <item>Always</item>
+    <item>ambi pur</item>
+    <item>Ariel</item>
+    <item>Pampers</item>
+    <item>Olay</item>
+</string-array>
+    </resources>

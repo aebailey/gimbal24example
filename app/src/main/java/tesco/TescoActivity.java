@@ -18,7 +18,7 @@ import baileyae.gimbal24example.BaseActivity;
 import baileyae.gimbal24example.R;
 
 
-public class MainActivity extends BaseActivity {
+public class TescoActivity extends BaseActivity {
     private ImageLoaderConfiguration config;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity {
 
 
     public void searchProduct(View view){
-
+        hideKeyboard();
         Intent intent = new Intent(this, OfferListActivity.class);
         EditText editText = (EditText) findViewById(R.id.search_text);
         String search = editText.getText().toString();

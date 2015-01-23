@@ -9,17 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.transition.Scene;
 import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -40,8 +34,6 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-
-import tesco.MainActivity;
 
 
 public class MapsActivity extends BaseActivity
@@ -87,6 +79,7 @@ public class MapsActivity extends BaseActivity
         //inflate your activity layout here!
         View contentView = inflater.inflate(R.layout.activity_maps, null, false);
         mDrawerLayout.addView(contentView, 0);
+
         container =(ViewGroup) findViewById(R.id.main_container);
 
 
@@ -103,7 +96,7 @@ public class MapsActivity extends BaseActivity
         adapter = new GimbalEventListAdapter(this);
         listView = (ListView) findViewById(R.id.listview);
         createListView(listView);
-
+        setTitle(R.string.title_activity_maps);
 
 
 
@@ -173,6 +166,10 @@ public class MapsActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "On Resume");
+        mDrawerList.setItemChecked(0, true);
+        mDrawerList.setSelection(0);
+        setTitle(R.string.title_activity_maps);
+        mGoogleApiClient.connect();
         // Make sure that GPS is enabled on the device
         LocationManager mlocManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         boolean enabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -353,7 +350,7 @@ public class MapsActivity extends BaseActivity
 
             mylatlng = new LatLng(location.getLatitude(),location.getLongitude());
             mLastLocation = location;
-            MyApp appState = ((MyApp)getApplicationContext());
+            PandG appState = ((PandG)getApplicationContext());
             appState.setState(mLastLocation);
             //mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
             updateUI();

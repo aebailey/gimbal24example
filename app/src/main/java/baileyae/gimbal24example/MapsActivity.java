@@ -305,6 +305,7 @@ public class MapsActivity extends BaseActivity
         if (mRequestingLocationUpdates) {
             startLocationUpdates();
         }
+        //TODO: Decide on optin process
         if (GimbalDAO.showOptIn(getApplicationContext())) {
             startActivity(new Intent(this, OptInActivity.class));
         }

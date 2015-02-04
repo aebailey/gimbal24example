@@ -1,0 +1,34 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <WebView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/regist"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+
+
+
+        <Button android:id="@+id/rtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/return_login"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:background="#d72da8"
+            android:textColor="#ffffff"/>
+    </LinearLayout>
+</LinearLayout>

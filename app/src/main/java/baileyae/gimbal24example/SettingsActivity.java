@@ -44,6 +44,14 @@ public class SettingsActivity extends PreferenceActivity {
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 if (newValue == Boolean.TRUE) {
                     PlaceManager.getInstance().startMonitoring();
+                    GimbalDAO.setOptInShown(getApplicationContext());
+
+                    PlaceManager.getInstance().startMonitoring();
+
+                    // Setup Push Communication
+                    String gcmSenderId = "649583496832"; // <--- SET THIS STRING TO YOUR PUSH SENDER ID HERE (Google API project #) ##
+                    Gimbal.registerForPush(gcmSenderId);
+
                 }
                 else {
                     PlaceManager.getInstance().stopMonitoring();

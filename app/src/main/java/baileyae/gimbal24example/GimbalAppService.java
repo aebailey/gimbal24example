@@ -65,9 +65,10 @@ public class GimbalAppService extends Service {
             @Override
             public void onEntry(Place place, long timestamp) {
                 addEvent(new GimbalEvent(TYPE.PLACE_ENTER, place.getName(), new Date(timestamp)));
-                Log.i(TAG,"Place Entered");
-                place.getAttributes();
-
+                Log.i(TAG, "Place Entered");
+                if (place.getAttributes().getValue("Customer") != null) {
+                    Log.i(TAG, place.getAttributes().getValue("Customer"));
+                }
                 notify_place(place, TYPE.PLACE_ENTER);
             }
 
